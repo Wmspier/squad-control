@@ -30,4 +30,4 @@ MonoBehaviour:
   <Icon>k__BackingField: {fileID: 21300000, guid: 163ed14656b614436bbb6aa6a514b7b7,
     type: 3}
   <MinRange>k__BackingField: 2
-  <MaxRange>k__BackingField: 4.5
+  <MaxRange>k__BackingField: 10
