@@ -479,6 +479,11 @@ namespace Squad
 		public void ResetMemberScales()
 		{
 			if (Members == null) return;
+
+			if (StaticTestData.Instance.SquadMemberScale == 0f)
+			{
+				StaticTestData.Instance.SquadMemberScale = 1f;
+			}
 			
 			for (var index = 0; index < Members.Count; index++)
 			{
