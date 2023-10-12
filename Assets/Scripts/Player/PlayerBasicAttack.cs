@@ -37,9 +37,13 @@ namespace Player
 
 		private void Update()
 		{
-			var timeSinceAttack = Time.time - _previousBasicAttackTime;
+			if (_target == null) return;
 			
-			if(_target == null || timeSinceAttack < basicAttackFrequencySeconds) return;
+			Transform t;
+			(t = transform).LookAt(_target.transform);
+			
+			var timeSinceAttack = Time.time - _previousBasicAttackTime;
+			if(timeSinceAttack < basicAttackFrequencySeconds) return;
 
 			if (!_target.IsAlive)
 			{
@@ -50,8 +54,6 @@ namespace Player
 
 			if (!IsCloseEnoughToAttack()) return;
 
-			Transform t;
-			(t = transform).LookAt(_target.transform);
 			
 			characterVfx.SetProjectileDirection((_target.transform.position - t.position).normalized);
 			AbilityActivator.ActivateAbilityAtIndex(AbilityIndex);

@@ -59,7 +59,7 @@ namespace Squad
 					followBehavior.enabled = true;
 
 					var stoppingDistance = HasTargetEnemy 
-						? Mathf.Max(followStoppingDistance, AttackBehavior.StoppingDistance) 
+						? Mathf.Min(followStoppingDistance, AttackBehavior.StoppingDistance) 
 						: followStoppingDistance;
 					followBehavior.SetAgentStoppingDistance(stoppingDistance);
 					break;
@@ -83,7 +83,7 @@ namespace Squad
 			TargetReached?.Invoke(this);
 		}
 
-		public void SetTarget(GameObject enemy) => AttackBehavior.SetTarget(enemy);
+		public void SetTargetEnemy(GameObject enemy) => AttackBehavior.SetTarget(enemy);
 		
 		public void ClearTarget() => AttackBehavior.ClearTarget();
 

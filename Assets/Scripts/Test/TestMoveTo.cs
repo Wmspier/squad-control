@@ -26,7 +26,7 @@ namespace Test
 			{
 				_lastWaypointPosition = positionNullable.Value;
 
-				_squad.SetMembersTargetClamped(_lastWaypointPosition);
+				_squad.SetMembersTargetPositionClamped(_lastWaypointPosition);
 				_waypoint.SetActive(true);
 				_waypoint.transform.position = _lastWaypointPosition;
 			}

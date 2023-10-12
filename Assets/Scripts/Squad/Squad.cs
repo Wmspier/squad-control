@@ -135,7 +135,7 @@ namespace Squad
 				// Member is returning to position, update its target
 				if (member.CurrentBehavior is SquadMember.MovementBehavior.ReturningToSquad)
 				{
-					SetMemberTargetClamped(member, transform.position + _memberPositionsRelative[i]);
+					SetMemberTargetPositionClamped(member, transform.position + _memberPositionsRelative[i]);
 					continue;
 				}
 
@@ -179,7 +179,7 @@ namespace Squad
 					foreach (var member in Members)
 					{
 						member.SwitchMovementBehavior(SquadMember.MovementBehavior.FollowingTarget);
-						SetMemberTargetClamped(member, interactable.transform.position);
+						SetMemberTargetPositionClamped(member, interactable.transform.position);
 					}
 				}
 				else
@@ -204,7 +204,7 @@ namespace Squad
 			foreach (var member in Members)
 			{
 				member.SwitchMovementBehavior(SquadMember.MovementBehavior.FollowingTarget);
-				SetMemberTargetClamped(member, interactable.transform.position);
+				SetMemberTargetPositionClamped(member, interactable.transform.position);
 			}
 		}
 
@@ -216,7 +216,7 @@ namespace Squad
 			for (var i = 0; i < Members.Count; i++)
 			{
 				Members[i].TargetReached += OnTargetReached;
-				SetMemberTargetClamped(Members[i], transform.position + _memberPositionsRelative[i]);
+				SetMemberTargetPositionClamped(Members[i], transform.position + _memberPositionsRelative[i]);
 				Members[i].SwitchMovementBehavior(SquadMember.MovementBehavior.ReturningToSquad);
 			}
 
@@ -334,8 +334,20 @@ namespace Squad
 		
 		private void SetMemberTargetEnemy(SquadMember member, GameObject enemy)
 		{
-			member.SetTarget(enemy.gameObject);
-			SetMemberTargetClamped(member, enemy.transform.position);
+			var targetPosition = enemy.transform.position;
+			if (member.Type == CharacterTypeEnum.PlayerRanged)
+			{
+				var targetDirection = (member.transform.position - targetPosition).normalized;
+				var maxRange = member.AbilityActivator.Abilities.ElementAt(1).MaxRange;
+				var preferredPosition = targetPosition + targetDirection * maxRange;
+				SetMemberTargetPositionClamped(member, preferredPosition);
+			}
+			else
+			{
+				SetMemberTargetPositionClamped(member, enemy.transform.position);
+			}
+			
+			member.SetTargetEnemy(enemy.gameObject);
 			member.SwitchMovementBehavior(SquadMember.MovementBehavior.FollowingTarget);
 		}
 
@@ -370,7 +382,7 @@ namespace Squad
 		#endregion
 		
 		#region Utilities
-		private void SetMemberTargetClamped(SquadMember member, Vector3 target)
+		private void SetMemberTargetPositionClamped(SquadMember member, Vector3 target)
 		{
 			var position = transform.position;
 			var distance = Vector3.Distance(position, target);
@@ -386,11 +398,11 @@ namespace Squad
 		}
 		
 		// Set the target position of all members but clamp it to the radius of the squad zone
-		public void SetMembersTargetClamped(Vector3 target)
+		public void SetMembersTargetPositionClamped(Vector3 target)
 		{
 			foreach (var member in Members)
 			{
-				SetMemberTargetClamped(member, target);
+				SetMemberTargetPositionClamped(member, target);
 			}
 		}
 
@@ -460,7 +472,7 @@ namespace Squad
 			{
 				if (Members[i].CurrentBehavior is SquadMember.MovementBehavior.FollowingTarget) continue;
 				
-				SetMemberTargetClamped(Members[i], transform.position + _memberPositionsRelative[i]);
+				SetMemberTargetPositionClamped(Members[i], transform.position + _memberPositionsRelative[i]);
 			}
 		}
 
